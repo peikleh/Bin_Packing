@@ -47,7 +47,7 @@ def place_box(hold_x):
     hold_width = sizes[0][1]
     curr_y = 0
 
-    while(len(sizes) != 0 and ((sizes[0][2] + curr_y) < y_max)):
+    while(len(sizes) != 0 and ((sizes[0][2] + curr_y) <= y_max)):
         final_pos.append([sizes[0][0],curr_x, curr_y])
         #check if last box fits in gap
         if(sizes[-1][1] <= (hold_width - sizes[0][1])):
@@ -66,25 +66,28 @@ def place_box(hold_x):
 def gap (temp_x, temp_y, max_x, max_y):
     #set size of new list
     gap_list_len = int(len(sizes)/2)
-    #set new list to the last half of the sizes list
-    gap_list = sizes[gap_list_len:]
+    y_list = []
+    y_list.append(temp_y)
+    start_x = temp_x
     #add boxes from end of the list so long as it fits in the gap
-    while(len(gap_list)!= 0 and ((gap_list[-1][1]+ temp_x)< max_x)):
+    while(gap_list_len != 0 and ((sizes[-1][1]+ temp_x)<= max_x)):
         #current y of new box
-        new_y = temp_y + gap_list[-1][2]
+        new_y = temp_y + sizes[-1][2]
         #make sure y does not exceed max y
         if(new_y <= max_y ):
             #add the box
             final_pos.append([sizes[-1][0],temp_x, temp_y])
             #update the x
-            temp_x += gap_list[-1][1]
-            #temp_y += max(temp_y, new_y)
-            #remove the box from our temporary list
-            gap_list.pop()
+            temp_x += sizes[-1][1]
+            y_list.append(new_y)
+            gap_list_len -= 1
             #remove from our main list
             sizes.pop()
         else:
-            break    
+            break
+    temp_y += max(y_list)
+    if((sizes[-1][2]+ temp_y)<= max_y):
+        gap(start_x, temp_y, max_x, max_y)
 
 def sort_width (sizes):
     """Sorts list acording to width"""
