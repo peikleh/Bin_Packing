@@ -44,16 +44,36 @@ def place_box(hold_x):
     y_max = 20000
     curr_x = hold_x
     hold_x += sizes[0][1]
+    hold_width = sizes[0][1]
+    curr_width = hold_width
     curr_y = 0
+
     while(len(sizes) != 0 and ((sizes[0][2] + curr_y) < y_max)):
         final_pos.append([sizes[0][0],curr_x, curr_y])
+        if(sizes[-1][1] <= (hold_width-curr_width)):
+            temp_x = curr_x + curr_width
+            max_y = curr_y +sizes[0][2]
+            gap(temp_x, curr_y, hold_x, max_y)
         curr_y += sizes[0][2]
+        curr_width = sizes[0][1]
         sizes.remove(sizes[0])
     
     return (hold_x)
         
     
-    
+def gap (temp_x, temp_y, hold_x, max_y):
+    gap_list_len = int(len(sizes)/2)
+    gap_list = sizes[gap_list_len:]
+    while(len(gap_list)!= 0 and (gap_list[-1][1]+ temp_x)< hold_x):
+        if(gap_list[-1][2] <= max_y ):
+            final_pos.append([sizes[-1][0],temp_x, temp_y])
+            temp_x += gap_list[-1][1]
+            #temp_y = max(temp_y, (temp_y + gap_list[-1][2])
+            gap_list.pop()
+            sizes.pop()
+        else:
+            break    
+
 def sort_width (sizes):
     """Sorts list acording to width"""
     p = sorted(sizes, key=lambda x: x[1])
